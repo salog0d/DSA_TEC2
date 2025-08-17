@@ -51,6 +51,46 @@ public:
              << closest_x2 << ", " << closest_y2 << ")\n";
         cout << "The closest distance is: " << closest_distance << "\n";
     }
+
+    void stringMatching(string target, string text){
+        int target_size = target.length();
+        int text_size = text.length();
+        int repetitions = 0;
+        bool match = false;
+        
+        if (target_size == 0){
+            std::cout << "Target is empty\n";
+            return;   
+        }
+    
+        if (target_size > text_size){
+            std::cout << "Target size is greater than the text!\n";
+            return;
+        }
+    
+        for (int i = 0; i <= text_size - target_size; i++){
+            int j = 0;
+            int x = i;
+
+            while (j < target_size && x < text_size && target[j] == text[x]){
+                j++;
+                x++;
+            }
+    
+            if (j == target_size){
+                repetitions++;
+                match = true;
+            }
+        }
+        
+        if(match){
+            std::cout << "The word " << target << " appears " << repetitions << " times in the text.";
+        }
+        else{
+            std::cout << "Target is not in the text\n";
+        }
+    }
+
 };
 
 int main() {
@@ -65,6 +105,11 @@ int main() {
     };
     int length = sizeof(arr) / sizeof(arr[0]);
 
-    sol.ClosestPair(arr, length);
+    string target = "chester";
+    string text = "Hay un perro chesa que se chester llama chester un chester";
+
+    sol.stringMatching(target, text);
+
+    //sol.ClosestPair(arr, length);
     return 0;
 }
