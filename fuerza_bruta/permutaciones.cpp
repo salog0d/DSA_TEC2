@@ -1,3 +1,21 @@
+/*
+Permutations in Lexicographic Order (Brute Force)
+
+Description:
+Generates all permutations of numbers from 1 to n in lexicographic order.
+The algorithm finds the next permutation by identifying a pivot, swapping 
+with the rightmost larger element, and reversing the suffix.
+
+
+ALGORITHM permutacionesLex(n)
+Generates all permutations of size n in lexicographic order
+Input: integer n
+Output: all permutations of [1..n] and total number of permutations
+
+- Time complexity:  O(n * n!) (there are n! permutations, each generated in O(n))
+*/
+
+
 #include <iostream>
 using namespace std;
 

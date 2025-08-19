@@ -1,3 +1,20 @@
+"""
+Subsets (Power Set as binary vectors)
+
+Description:
+Generates all subsets (as binary vectors) of size n using recursion.
+The idea: for subsets of size n-1, duplicate them by appending a 0 and a 1
+to each, obtaining all subsets of size n.
+
+ALGORITHM subsets(n)
+Generates all binary subsets of length n
+Input: integer n (size of the binary vector)
+Output: list of lists with 0/1 representing each subset
+
+- Time complexity:  O(2^n)
+"""
+
+
 class Solution:
     
     @staticmethod

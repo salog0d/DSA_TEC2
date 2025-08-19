@@ -20,6 +20,8 @@ for i = 0 to l
 end for 
 return false
 
+-Time complexity = O(n^2) 
+
 */
 
 #include <iostream>

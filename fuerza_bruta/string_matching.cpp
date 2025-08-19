@@ -1,3 +1,21 @@
+/*
+String Matching (Brute Force)
+
+Description:
+Searches for multiple target patterns inside a text using brute force.
+Each pattern is compared character by character against every possible
+substring of the text. Counts and reports the number of times each 
+pattern appears.
+
+ALGORITHM stringMatching(targets[], text, targets_size)
+Searches for each target string inside the given text
+Input: array of target strings, text string, number of targets
+Output: Number of repetitions of each target in the text
+
+- Time complexity:  O(m * n) where m = text length, n = total length of all target patterns.
+*/
+
+
 #include <iostream>
 #include <fstream>
 #include <sstream>

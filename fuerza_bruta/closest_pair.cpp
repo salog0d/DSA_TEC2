@@ -1,3 +1,22 @@
+/*
+Closest Pair of Points (Brute Force)
+
+Description:
+Reads sets of 2D points from text files, then for each set finds the pair of points
+with the minimum Euclidean distance using a brute-force double loop. For every file:
+- Load all (x, y) pairs into an array.
+- Compare every distinct pair, compute distance d = sqrt((x2 - x1)^2 + (y2 - y1)^2).
+- Track the smallest distance and the corresponding points.
+- Print the closest pair and the distance.
+
+ALGORITHM closestPair(points[], n)
+Input: array of 2D points, size n
+Output: the closest pair and their distance
+
+- Time complexity:  O(n^2) per dataset (all pairs compared).
+*/
+
+
 #include <iostream>
 #include <fstream>
 #include <string>
