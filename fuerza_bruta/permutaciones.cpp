@@ -70,6 +70,6 @@ class Solution{
 
         int main(){
             Solution per;
-            per.permutacionesLex(3);
+            per.permutacionesLex(4);
             return 0;
         }
