@@ -43,7 +43,8 @@ public:
                 return;
             }
         
-            for (int i = 0; i <= text_size - target_size; i++){
+            for (int i =
+                 0; i <= text_size - target_size; i++){
                 int j = 0;
                 int x = i;
 
