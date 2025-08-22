@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <queue>
 using namespace std;
 
 class Solution {
@@ -7,32 +8,31 @@ class Solution {
     public:
 
     vector<int> topologicalSort(vector<vector<int>> G){
-    vector<int> n_order;
-    n_order.push_back(0);                 
+        vector<int> n_order;
+        n_order.push_back(0);                 
 
-    if (G.empty()) return n_order;
+        if (G.empty()) return n_order;
 
-    int columns = (int)G.size();
+        int columns = (int)G.size();
 
-    for (int i = 0; i < columns; ++i) {
-        for (int u = 0; u < (int)G[i].size(); ++u) {
-            n_order.push_back(G[i][u]);
-        }
+        for (int i = 0; i < columns; i++) {
+            if(G[i]==0){
+                n_order.push_back(G[i]);
+            }
+        return n_order;
     }
-    return n_order;
-}
 };
 
 int main(){
     Solution sol;
 
     vector<vector<int>> G = {
-        {1,2,6,4},
-        {5},
-        {3,3,2,6},
-        {100,40},
-        {}         
-    };
+    {1,2},  
+    {3},    
+    {3,4},  
+    {},     
+    {}      
+};
 
     vector<int> n_order = sol.topologicalSort(G);
     int n = (int)n_order.size();          

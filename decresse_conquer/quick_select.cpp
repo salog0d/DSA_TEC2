@@ -53,6 +53,6 @@ int main(){
     Solution sol;
     vector<int> nums = {6,1,24,4,5,7,2,8,9};
 
-    sol.quick_select(nums, 1);
+    sol.quick_select(nums, 5);
     return 0;
 }
