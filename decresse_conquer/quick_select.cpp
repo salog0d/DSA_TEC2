@@ -5,35 +5,41 @@ using namespace std;
 class Solution {
 
     public:
-        void quick_select(vector<int> nums, int s){
-            int n = nums.size() -1 ;
+        void quick_select(vector<int> nums, int k){
+            int n = nums.size();
 
             if(nums.empty()){
                 std::cout<< "El arreglo esta vacio";
                 return;
             }
-            if(n<s){
+            if(k<n||k>n){
                 std::cout<<"Target index out of bounds";
                 return;
             }
 
-            int division = n;
+            int s = 0;
+            int l = n-1;
+            int k = k-1;
             while(true){
-                vector<int> temp;
                 int pivot = nums[0];
-                int swaps = 0;
-                for(int i= 1; i<division; i++){
+                for(int i=0; i<l; i++){
                     if(nums[i]<=pivot){
-                        temp.push_back(nums[i]);
-                        swaps ++;
+                        int temp = nums[i];
+                        nums[i] = nums[s];
+                        nums[s] = temp;
+                        s++;
                     }
                 }
-                if (swaps == s) {
-                    cout << "El valor en la posición " << s << " es " << pivot << endl;
+                if (s== k) {
+                    cout << "El valor en la posición " << k << " es " << pivot << endl;
                     break;
                 }
-
-                division = swaps;
+                else if(s>k){
+                    division=s;
+                }
+                else if(s<k){
+                    i= s+1;
+                }
             }
         }
 };
