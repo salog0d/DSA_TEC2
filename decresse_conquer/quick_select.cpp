@@ -12,33 +12,38 @@ class Solution {
                 std::cout<< "El arreglo esta vacio";
                 return;
             }
-            if(k<n||k>n){
+            if(k < 1 || k > n){
                 std::cout<<"Target index out of bounds";
                 return;
             }
 
             int s = 0;
-            int l = n-1;
-            int k = k-1;
+            int l = n - 1;
+            int target = k - 1;
+
             while(true){
-                int pivot = nums[0];
-                for(int i=0; i<l; i++){
-                    if(nums[i]<=pivot){
-                        int temp = nums[i];
-                        nums[i] = nums[s];
-                        nums[s] = temp;
-                        s++;
+                int pivot = nums[s];
+                int i = s + 1;
+
+                for(int j = s + 1; j <= l; j++){
+                    if(nums[j] < pivot){
+                        swap(nums[i], nums[j]);
+                        i++;
                     }
                 }
-                if (s== k) {
-                    cout << "El valor en la posición " << k << " es " << pivot << endl;
+
+                int pivotIndex = i - 1;
+                swap(nums[s], nums[pivotIndex]);
+
+                if(pivotIndex == target) {
+                    cout << "El valor en la posición " << k << " es " << nums[pivotIndex] << endl;
                     break;
                 }
-                else if(s>k){
-                    division=s;
+                else if(pivotIndex > target){
+                    l = pivotIndex - 1;
                 }
-                else if(s<k){
-                    i= s+1;
+                else {
+                    s = pivotIndex + 1;
                 }
             }
         }
@@ -48,7 +53,6 @@ int main(){
     Solution sol;
     vector<int> nums = {6,1,24,4,5,7,2,8,9};
 
-    sol.quick_select(nums,1);
-
+    sol.quick_select(nums, 1);
     return 0;
 }
