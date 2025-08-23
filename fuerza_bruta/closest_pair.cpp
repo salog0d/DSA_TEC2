@@ -1,154 +1,61 @@
 /*
-Closest Pair of Points (Brute Force)
+Topological Sort (Kahn's Algorithm - BFS)
 
 Description:
-Reads sets of 2D points from text files, then for each set finds the pair of points
-with the minimum Euclidean distance using a brute-force double loop. For every file:
-- Load all (x, y) pairs into an array.
-- Compare every distinct pair, compute distance d = sqrt((x2 - x1)^2 + (y2 - y1)^2).
-- Track the smallest distance and the corresponding points.
-- Print the closest pair and the distance.
+Encuentra un orden topológico en un grafo dirigido acíclico (DAG).
+El algoritmo de Kahn usa indegree (grado de entrada) y una cola para
+procesar nodos sin dependencias.
 
-ALGORITHM closestPair(points[], n)
-Input: array of 2D points, size n
-Output: the closest pair and their distance
+ALGORITHM topologicalSort(G)
+Input: grafo dirigido representado como lista de adyacencia
+Output: vector con un orden topológico válido
 
-- Time complexity:  O(n^2) per dataset (all pairs compared).
+- Complejidad temporal: O(V + E), donde V = vértices, E = aristas
 */
 
-
 #include <iostream>
-#include <fstream>
-#include <string>
-#include <cmath>
+#include <vector>
+#include <queue>
 using namespace std;
 
-class Solution{
+class Solution {
 public:
-    struct coordinates{
-        double x;
-        double y;
-    };
+    vector<int> topologicalSort(const vector<vector<int>>& G){
+        int n = (int)G.size();
+        vector<int> indeg(n, 0);
 
-    void ClosestPair(coordinates* arr, int length){
-        if (length < 2) {
-            cout << "Array needs at least two points!\n";
-            return;
-        }
+        for (int u = 0; u < n; ++u)
+            for (int v : G[u])
+                ++indeg[v];
 
-        double closest_x1 = 0.0, closest_y1 = 0.0;
-        double closest_x2 = 0.0, closest_y2 = 0.0;
-        double closest_distance = 1e9; 
+        queue<int> q;
+        for (int i = 0; i < n; ++i)
+            if (indeg[i] == 0) q.push(i);
 
-        for (int i = 0; i < length - 1; ++i) {
-            for (int j = i + 1; j < length; ++j) {
-                coordinates ci = arr[i];
-                coordinates cj = arr[j];
-
-                double dx = cj.x - ci.x;
-                double dy = cj.y - ci.y;
-                double distance = sqrt(dx*dx + dy*dy);
-
-                if (distance < closest_distance) {
-                    closest_distance = distance;
-                    closest_x1 = ci.x; closest_y1 = ci.y;
-                    closest_x2 = cj.x; closest_y2 = cj.y;
-                }
+        vector<int> order;
+        while (!q.empty()) {
+            int u = q.front(); q.pop();
+            order.push_back(u);
+            for (int v : G[u]) {
+                if (--indeg[v] == 0) q.push(v);
             }
         }
-
-        cout << "Closest pair: ("
-             << closest_x1 << ", " << closest_y1 << ") and ("
-             << closest_x2 << ", " << closest_y2 << ")\n";
-        cout << "The closest distance is: " << closest_distance << "\n";
+        return order;
     }
 };
 
-bool leerArchivo(const string& filename, Solution::coordinates*& arr, int& length) {
-    ifstream file(filename);
-    if (!file.is_open()) {
-        cerr << "No se pudo abrir el archivo: " << filename << "\n";
-        arr = nullptr;
-        length = 0;
-        return false;
-    }
-
-    length = 0;
-    double x, y;
-    while (file >> x >> y) {
-        length++;
-    }
-
-    if (length == 0) {
-        cerr << "Archivo vacio: " << filename << "\n";
-        arr = nullptr;
-        return false;
-    }
-
-    arr = new Solution::coordinates[length];
-    file.clear();
-    file.seekg(0, ios::beg);
-
-    int i = 0;
-    while (file >> x >> y) {
-        arr[i].x = x;
-        arr[i].y = y;
-        i++;
-    }
-    file.close();
-    return true;
-}
-
 int main() {
     Solution sol;
+    vector<vector<int>> G = {
+        {1,2},
+        {3},
+        {3,4},
+        {},
+        {}
+    };
 
-    Solution::coordinates* arr_n10 = nullptr;
-    int len_n10 = 0;
-    if (leerArchivo("fuerza_bruta/test_cases/closest_distance/puntos-n10.txt", arr_n10, len_n10)) {
-        sol.ClosestPair(arr_n10, len_n10);
-        delete[] arr_n10;
-        cout << "---------------------------------\n";
-    }
-
-    Solution::coordinates* arr_n11 = nullptr;
-    int len_n11 = 0;
-    if (leerArchivo("fuerza_bruta/test_cases/closest_distance/puntos-n11.txt", arr_n11, len_n11)) {
-        sol.ClosestPair(arr_n11, len_n11);
-        delete[] arr_n11;
-        cout << "---------------------------------\n";
-    }
-
-    Solution::coordinates* arr_n15 = nullptr;
-    int len_n15 = 0;
-    if (leerArchivo("fuerza_bruta/test_cases/closest_distance/puntos-n15.txt", arr_n15, len_n15)) {
-        sol.ClosestPair(arr_n15, len_n15);
-        delete[] arr_n15;
-        cout << "---------------------------------\n";
-    }
-
-    Solution::coordinates* arr_n20 = nullptr;
-    int len_n20 = 0;
-    if (leerArchivo("fuerza_bruta/test_cases/closest_distance/puntos-n20.txt", arr_n20, len_n20)) {
-        sol.ClosestPair(arr_n20, len_n20);
-        delete[] arr_n20;
-        cout << "---------------------------------\n";
-    }
-
-    Solution::coordinates* arr_n50 = nullptr;
-    int len_n50 = 0;
-    if (leerArchivo("fuerza_bruta/test_cases/closest_distance/puntos-n50.txt", arr_n50, len_n50)) {
-        sol.ClosestPair(arr_n50, len_n50);
-        delete[] arr_n50;
-        cout << "---------------------------------\n";
-    }
-
-    Solution::coordinates* arr_n100 = nullptr;
-    int len_n100 = 0;
-    if (leerArchivo("fuerza_bruta/test_cases/closest_distance/puntos-n100.txt", arr_n100, len_n100)) {
-        sol.ClosestPair(arr_n100, len_n100);
-        delete[] arr_n100;
-        cout << "---------------------------------\n";
-    }
-
+    vector<int> n_order = sol.topologicalSort(G);
+    for (int x : n_order) cout << x << " ";
+    cout << "\n";
     return 0;
 }

@@ -1,3 +1,18 @@
+/*
+Fake Coin Problem (Divide and Conquer)
+
+Description:
+Dado un arreglo de monedas idénticas excepto una falsa con peso distinto (ejemplo: 1 frente a 0),
+se busca la posición de la moneda falsa dividiendo el arreglo en tercios y comparando sumas.
+
+ALGORITHM fake_coin(arr)
+Input: arreglo de enteros (0 = moneda real, 1 = falsa en este ejemplo)
+Output: índice de la moneda falsa
+
+- Complejidad aproximada: O(log n) si se divide en 3 partes de manera recursiva
+- Complejidad actual: O(n) por los bucles de suma + búsqueda lineal
+*/
+
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -64,6 +79,3 @@ int main(){
     sol.fake_coin(arr);
 
 }
-
-
-//optimizacion n/3 k 2k 3k y comparar despues 

@@ -51,7 +51,9 @@ class Solution{
 int main(){
     Solution sol;
 
-    int result = sol.a_potencia(2,4);
+    int base= 2;
+    int exponente = 4;
+    int result = sol.a_potencia(base,exponente);
 
-    std::cout<< result ;
+    std::cout<<"El resultado de: " << base << " a la potencia " << exponente << " es " << result << "\n";
 }

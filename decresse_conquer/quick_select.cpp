@@ -1,3 +1,20 @@
+/*
+Quickselect Algorithm (Iterative)
+
+Description:
+Implementa el algoritmo Quickselect para encontrar el k-ésimo elemento más pequeño en un arreglo.
+El algoritmo es similar a QuickSort, pero solo recurre hacia un lado dependiendo de la posición
+del pivote. Se repite hasta encontrar el índice buscado.
+
+ALGORITHM quick_select(nums, k)
+Input: arreglo nums, entero k (1-indexado)
+Output: valor del k-ésimo elemento más pequeño
+
+- Complejidad promedio: O(n)
+- Complejidad peor caso: O(n^2) (cuando los pivotes son siempre malos)
+*/
+
+
 #include <iostream>
 #include <vector>
 using namespace std;
