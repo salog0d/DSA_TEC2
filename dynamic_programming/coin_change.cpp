@@ -12,13 +12,13 @@ public:
     long long coinChange(int n, int K, const vector<int>& C){
         
         vector<vector<int>> M(n + 1, vector<int>(K + 1, 0));
+        M[0][0] = 1; 
         
         if(K==0){
-            M[0][0] = 0; 
             return  M[0][0];
         }
 
-        M[0][0] = 1; 
+        
 
         for(int i = 1; i <= n; ++i){
             for(int j = 0; j <= K; ++j){
