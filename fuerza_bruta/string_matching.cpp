@@ -41,7 +41,7 @@ public:
             }
 
             int repetitions = 0;
-            vector<pair<int,int>> positions; // [start, end] for each match (0-based)
+            vector<pair<int,int>> positions; 
 
             for (int i = 0; i <= text_size - target_size; i++){
                 int j = 0;
