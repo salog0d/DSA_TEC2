@@ -48,7 +48,7 @@ int main() {
     Solution sol;
     vector<vector<int>> G = {
         {1,2},
-        {3},
+        {3,},
         {3,4},
         {},
         {}
