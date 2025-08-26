@@ -72,6 +72,9 @@ bool leerArchivo(const string& filename, Solution::coordinates*& arr, int& lengt
         length = 0;
         return false;
     }
+    
+    string linea_ignorada;
+    getline(file, linea_ignorada);
 
     length = 0;
     double x, y;
@@ -88,6 +91,8 @@ bool leerArchivo(const string& filename, Solution::coordinates*& arr, int& lengt
     arr = new Solution::coordinates[length];
     file.clear();
     file.seekg(0, ios::beg);
+
+    getline(file, linea_ignorada);
 
     int i = 0;
     while (file >> x >> y) {
