@@ -40,7 +40,6 @@ public:
 
 };
 
-// Función auxiliar para leer la matriz desde archivo
 vector<vector<int>> leerMatrizDesdeArchivo(const string& filename){
     ifstream file(filename);
     if(!file.is_open()){
@@ -50,7 +49,7 @@ vector<vector<int>> leerMatrizDesdeArchivo(const string& filename){
 
     string line;
     vector<vector<int>> matriz;
-    bool skipFirst = true; // saltar primera línea
+    bool skipFirst = true; 
 
     while(getline(file, line)){
         if(skipFirst){ skipFirst = false; continue; }
