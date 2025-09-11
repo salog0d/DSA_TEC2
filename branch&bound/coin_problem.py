@@ -1,7 +1,13 @@
-# -*- coding: utf-8 -*-
 """
-Branch-and-Bound para Coin-Collecting (abajo/derecha)
-Corre automáticamente sobre los casos:
+Branch-and-Bound para Coin-Collecting (movimientos: abajo / derecha)
+
+Características:
+- Lee instancias desde TXT en formatos: "R C" + matriz, "N" + matriz cuadrada, o matriz cruda.
+- Usa una fila de prioridad (heapq) ordenada por cota superior (mayor primero).
+- Imprime la ruta óptima como secuencia de (dirección, valor tomado en ese paso) y el Total.
+- Incluye una heurística voraz para tener un incumbente inicial y podar agresivamente.
+
+Ejecuta automáticamente sobre los casos típicos:
   coins-n5, coins-n7, coins-n8, coins-n9,
   coins-n10, coins-n12, coins-n20, coins-n100
 """
@@ -11,9 +17,6 @@ from typing import List, Tuple
 import re
 import os
 
-# --------------------------
-# Archivos de entrada
-# --------------------------
 FILES = [
     "coins-n5 (1).txt",
     "coins-n7.txt",
@@ -25,113 +28,148 @@ FILES = [
     "coins-n100 (1).txt",
 ]
 
-# Ajusta al directorio donde guardaste los txt
-BASE_DIR = "branch&bound/instances/"   # <-- cambia si los mueves
+BASE_DIR = "branch&bound/instances/"   
 
-# --------------------------
-# Lectura de instancia
-# --------------------------
+
 def load_grid(path: str) -> List[List[int]]:
     with open(path, "r", encoding="utf-8") as f:
         lines = [ln.strip() for ln in f if ln.strip()]
-    # 1) R C
+    if not lines:
+        raise ValueError("Archivo vacío")
+
     m_two = re.match(r"^\s*(\d+)\s+(\d+)\s*$", lines[0])
     if m_two:
         R, C = int(m_two.group(1)), int(m_two.group(2))
         rows = [list(map(int, ln.split())) for ln in lines[1:1+R]]
+        if any(len(r) != C for r in rows) or len(rows) != R:
+            raise ValueError("Dimensiones inconsistentes (R C).")
         return rows
-    # 2) N (cuadrada)
+
     m_one = re.match(r"^\s*(\d+)\s*$", lines[0])
     if m_one:
         N = int(m_one.group(1))
         rows = [list(map(int, ln.split())) for ln in lines[1:1+N]]
+        if any(len(r) != N for r in rows) or len(rows) != N:
+            raise ValueError("Dimensiones inconsistentes (N).")
         return rows
-    # 3) Matriz cruda
-    return [list(map(int, ln.split())) for ln in lines]
 
-# --------------------------
-# Cota superior
-# --------------------------
+    rows = [list(map(int, ln.split())) for ln in lines]
+    C = len(rows[0])
+    if any(len(r) != C for r in rows):
+        raise ValueError("Matriz con filas de longitudes distintas.")
+    return rows
+
+
 def upper_bound(grid: List[List[int]], i: int, j: int, suma: int) -> int:
+    """
+    Cota admisible (optimista) desde (i,j) con acumulado 'suma'.
+    Idea: de aquí al final hay exactamente 'pasos_restantes' movimientos,
+    y por lo tanto se visitarán 'pasos_restantes' celdas adicionales.
+    El mejor caso imposible (pero admisible como cota) sería tomar en
+    cada paso el valor máximo M de la submatriz restante.
+    UB = suma + pasos_restantes * M
+    """
     R, C = len(grid), len(grid[0])
-    if i == R-1 and j == C-1:
+    if i == R - 1 and j == C - 1:
         return suma
-    M = 0
+
+    M = grid[i][j]
     for r in range(i, R):
+        row = grid[r]
         for c in range(j, C):
-            if grid[r][c] > M:
-                M = grid[r][c]
-    pasos_restantes = (R-1-i) + (C-1-j)
+            if row[c] > M:
+                M = row[c]
+
+    pasos_restantes = (R - 1 - i) + (C - 1 - j)  
     return suma + pasos_restantes * M
 
-# --------------------------
-# Heurística inicial
-# --------------------------
-def greedy_initial(grid):
+
+def greedy_initial(grid: List[List[int]]) -> Tuple[int, List[Tuple[str, int]]]:
+    """
+    Baja/derecha eligiendo localmente la mejor moneda inmediata.
+    Devuelve (total, path) donde path es lista de (dirección, valor tomado).
+    Nota: el 'total' incluye el valor de la celda inicial (0,0).
+    """
     R, C = len(grid), len(grid[0])
     i, j = 0, 0
     total = grid[0][0]
-    path = []
-    while not (i == R-1 and j == C-1):
-        down_ok = i+1 < R
-        right_ok = j+1 < C
+    path: List[Tuple[str, int]] = []
+    while not (i == R - 1 and j == C - 1):
+        down_ok = (i + 1 < R)
+        right_ok = (j + 1 < C)
         if down_ok and right_ok:
-            if grid[i+1][j] >= grid[i][j+1]:
-                i += 1; val = grid[i][j]; total += val; path.append(("abajo", val))
+            if grid[i + 1][j] >= grid[i][j + 1]:
+                i += 1
+                val = grid[i][j]
+                total += val
+                path.append(("abajo", val))
             else:
-                j += 1; val = grid[i][j]; total += val; path.append(("derecha", val))
+                j += 1
+                val = grid[i][j]
+                total += val
+                path.append(("derecha", val))
         elif down_ok:
-            i += 1; val = grid[i][j]; total += val; path.append(("abajo", val))
+            i += 1
+            val = grid[i][j]
+            total += val
+            path.append(("abajo", val))
         else:
-            j += 1; val = grid[i][j]; total += val; path.append(("derecha", val))
+            j += 1
+            val = grid[i][j]
+            total += val
+            path.append(("derecha", val))
     return total, path
 
-# --------------------------
-# Branch-and-Bound
-# --------------------------
-def branch_and_bound(grid):
+
+def branch_and_bound(grid: List[List[int]]) -> Tuple[int, List[Tuple[str, int]]]:
     R, C = len(grid), len(grid[0])
+
     best_sum, best_path = greedy_initial(grid)
+
     start_sum = grid[0][0]
     root_ub = upper_bound(grid, 0, 0, start_sum)
-    heap = [(-root_ub, 0, 0, start_sum, [])]
+
+    heap: List[Tuple[int, int, int, int, List[Tuple[str, int]]]] = []
+    heappush(heap, (-root_ub, 0, 0, start_sum, []))
 
     while heap:
         neg_ub, i, j, suma, path = heappop(heap)
         ub = -neg_ub
+
+
         if ub <= best_sum:
             continue
-        if i == R-1 and j == C-1:
+
+        if i == R - 1 and j == C - 1:
             if suma > best_sum:
                 best_sum = suma
                 best_path = path
             continue
-        # hijos
-        if i+1 < R:
-            val = grid[i+1][j]
+
+        if i + 1 < R:
+            ni, nj = i + 1, j
+            val = grid[ni][nj]
             suma2 = suma + val
-            ub2 = upper_bound(grid, i+1, j, suma2)
-            if ub2 > best_sum:
-                heappush(heap, (-ub2, i+1, j, suma2, path+[("abajo", val)]))
-        if j+1 < C:
-            val = grid[i][j+1]
+            ub2 = upper_bound(grid, ni, nj, suma2)
+            if ub2 > best_sum:  
+                heappush(heap, (-ub2, ni, nj, suma2, path + [("abajo", val)]))
+
+        if j + 1 < C:
+            ni, nj = i, j + 1
+            val = grid[ni][nj]
             suma2 = suma + val
-            ub2 = upper_bound(grid, i, j+1, suma2)
+            ub2 = upper_bound(grid, ni, nj, suma2)
             if ub2 > best_sum:
-                heappush(heap, (-ub2, i, j+1, suma2, path+[("derecha", val)]))
+                heappush(heap, (-ub2, ni, nj, suma2, path + [("derecha", val)]))
+
     return best_sum, best_path
 
-# --------------------------
-# Imprimir en formato pedido
-# --------------------------
-def print_solution(name, total, path):
+
+def print_solution(name: str, total: int, path: List[Tuple[str, int]]) -> None:
     seq = ", ".join(f"{d} ({v})" for d, v in path) if path else "(sin movimientos)"
     print(f"\n== {name} ==")
-    print(f"{seq}. Total = {total}")
+    print(f"{seq}. Total= {total}")
 
-# --------------------------
-# Main
-# --------------------------
 if __name__ == "__main__":
     for fname in FILES:
         fpath = os.path.join(BASE_DIR, fname)
