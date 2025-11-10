@@ -1,14 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Convex Hull con QuickHull (SIN PDF)
-- Lee TODOS los .txt/.tsv/.dat en 'instances/' (formato: primera línea N, luego N líneas "x y" o "x\t y")
-- Para cada archivo genera: <base>_hull_points.txt y <base>_hull.png en 'outputs/'
-
-Uso:
-  python convex_hull_quickhull.py --input_dir instances --output_dir outputs
-"""
-
 import math
 import argparse
 from pathlib import Path
@@ -110,7 +99,7 @@ def plot_points_and_hull(points: List[Tuple[float, float]], hull: List[Tuple[flo
     plt.figure(figsize=(6, 6))
     if points:
         xs, ys = zip(*points)
-        plt.scatter(xs, ys, s=20)  # sin fijar colores/estilos
+        plt.scatter(xs, ys, s=20)  
     if hull and len(hull) >= 2:
         poly = hull + [hull[0]]
         hx, hy = zip(*poly)
@@ -125,12 +114,10 @@ def plot_points_and_hull(points: List[Tuple[float, float]], hull: List[Tuple[flo
 # --------------------------------- Main ------------------------------------
 
 def main():
-    # Versión simple: usa carpetas por defecto y sin argparse.
     in_dir  = Path("geometria/instances")
     out_dir = Path("outputs")
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    # Toma todos los .txt/.tsv/.dat
     exts = (".txt", ".tsv", ".dat")
     files = sorted(p for ext in exts for p in in_dir.glob(f"*{ext}"))
     if not files:
