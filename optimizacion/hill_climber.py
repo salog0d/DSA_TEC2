@@ -3,14 +3,10 @@ import random
 import statistics
 import matplotlib.pyplot as plt
 
-# ===========================
-# Lectura del grafo
-# ===========================
-
 def leer_grafo(path):
     edges = []
     with open(path, "r") as f:
-        # saltar encabezado
+
         while True:
             line = f.readline()
             if not line:
@@ -28,9 +24,7 @@ def leer_grafo(path):
             edges.append((u - 1, v - 1))  # 0-based
     return n, edges
 
-# ===========================
-# Función objetivo
-# ===========================
+
 
 def bandwidth(perm, edges):
     pos = [0] * len(perm)
@@ -44,9 +38,6 @@ def bandwidth(perm, edges):
             bw = d
     return bw
 
-# ===========================
-# Vecindario 2-swap
-# ===========================
 
 def vecindario_first(S, edges, rng, evals, max_evals):
     n = len(S)
@@ -103,9 +94,6 @@ def vecindario_best(S, edges, rng, evals, max_evals):
 
     return mejor_vecino, evals
 
-# ===========================
-# Hill climber
-# ===========================
 
 def hill_climber(n, edges, max_evals, modo, rng):
     S = list(range(n))
@@ -134,9 +122,6 @@ def hill_climber(n, edges, max_evals, modo, rng):
 
     return mejor_costo, mejor_perm, evals
 
-# ===========================
-# Experimentos
-# ===========================
 
 def correr_instancia(nombre, archivo, correr_first, correr_best, runs, max_evals):
     print(f"\n== Instancia {nombre} ({archivo}) ==")
@@ -177,7 +162,6 @@ def correr_instancia(nombre, archivo, correr_first, correr_best, runs, max_evals
         plt.title(f"{nombre}: {runs} ejecuciones, {max_evals} evals/ejecución")
         plt.tight_layout()
 
-        # guarda el gráfico en un archivo PNG
         filename_plot = f"{nombre}_{'_'.join(labels)}.png"
         plt.savefig(filename_plot)
         plt.close()
@@ -185,7 +169,6 @@ def correr_instancia(nombre, archivo, correr_first, correr_best, runs, max_evals
         print(f"  Boxplot guardado en: {filename_plot}")
 
 
-    # resumen numérico
     for modo in ["first", "best"]:
         vals = resultados[modo]
         if not vals:
@@ -199,9 +182,6 @@ def correr_instancia(nombre, archivo, correr_first, correr_best, runs, max_evals
 
     return resultados
 
-# ===========================
-# Menú
-# ===========================
 
 def menu():
     print("===================================")
