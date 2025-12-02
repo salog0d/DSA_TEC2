@@ -1,8 +1,4 @@
 """
-Metaheurísticas simples para MinLA
-ILS, Simulated Annealing, Hillclimber First/Best Improvement
-Código limpio sin type-hints, sin clases.
-
 -----------------------------------------------------------
 Pseudocódigo usado
 -----------------------------------------------------------
